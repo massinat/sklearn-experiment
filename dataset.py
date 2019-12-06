@@ -8,8 +8,8 @@ Contains method to initialize, manipulate and filter all the data loaded from th
 
 import pandas as pd
 
-class Dataset:
 
+class Dataset:
     def __init__(self, inputFile):
         self._originalDataset = pd.read_csv(inputFile, delimiter=",")
         self.workingDataset = self._originalDataset.copy()
@@ -28,8 +28,12 @@ class Dataset:
     def y(self):
         return self.y
 
+    def info(self):
+        print(self.workingDataset.head())
+        print(self.workingDataset.info())
+
     def filterByAttributesNames(self, *names):
-        return self.workingDataset[names]
+        return self.workingDataset[[*names]]
 
     def addCompositeAttribute(self, name, lambdaCalculation):
         if name in self.workingDataset.columns:
