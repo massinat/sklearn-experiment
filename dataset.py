@@ -12,13 +12,13 @@ import pandas as pd
 class Dataset:
     def __init__(self, inputFile):
         self._originalDataset = pd.read_csv(inputFile, delimiter=",")
-        self.workingDataset = self._originalDataset.copy()
-        self._X = self.dataset.drop("price", axis=1)
-        self._y = self.dataset["price"]
+        self._workingDataset = self._originalDataset.copy()
+        self._X = self._workingDataset.drop("price", axis=1)
+        self._y = self._workingDataset["price"]
 
     @property
-    def dataset(self):
-        return self._originalDataset
+    def data(self):
+        return self._workingDataset
 
     @property
     def X(self):
@@ -28,18 +28,21 @@ class Dataset:
     def y(self):
         return self.y
 
-    def info(self):
-        print(self.workingDataset.head())
-        print(self.workingDataset.info())
+    @property
+    def columns(self):
+        return self.data.columns
 
-    def filterByAttributesNames(self, *names):
-        return self.workingDataset[[*names]]
+    def info(self):
+        print(self.data.head())
+        print(self.data.info())
+        for item in self.data.columns:
+            print(f"{item}:{self.data[item].nunique()}")
 
     def addCompositeAttribute(self, name, lambdaCalculation):
-        if name in self.workingDataset.columns:
+        if name in self.data.columns:
             raise ValueError(f"The dataset already contains the property {name}")
 
-        self.workingDataset[name] = lambdaCalculation()
+        self.data[name] = lambdaCalculation()
 
     def restoreDataset(self):
-        self.workingDataset = self.dataset.copy()
+        self._workingDataset = self._originalDataset.copy()

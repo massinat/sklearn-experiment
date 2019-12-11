@@ -19,18 +19,16 @@ class Solution:
 
     # Let's nicely explore our data to gain more insight
     def exploreData(self):
-        self.dataset.info()
+        ##!self.dataset.info()
 
-        # self.dataVisualizer.showHistogram(self.dataset.filterByAttributesNames("price", "bedrooms", "bathrooms", "sqft_living"), 50)
-        # self.dataVisualizer.showHistogram(self.dataset.filterByAttributesNames("sqft_lot", "floors", "waterfront", "view"), 50)
-        # self.dataVisualizer.showHistogram(self.dataset.filterByAttributesNames("condition", "grade", "sqft_above", "sqft_basement"), 50)
-        # self.dataVisualizer.showHistogram(self.dataset.filterByAttributesNames("yr_built", "yr_renovated", "sqft_living15", "sqft_lot15"), 50)
+        ##!for item in [x for x in self.dataset.columns if x != "date"]:
+            ##!self.dataVisualizer.showHistogram(self.dataset.data[[item]])
 
-        self.dataVisualizer.showScatter(self.dataset.X, "long", "lat")
-        self.dataVisualizer.showScatter(self.dataset.X, "long", "lat", 0.1)
+        ##!self.dataVisualizer.showScatter(self.dataset.X, "long", "lat")
+        ##!self.dataVisualizer.showScatter(self.dataset.X, "long", "lat", 0.1)
 
-        #self.dataset.plot(kind="scatter", x="long", y="lat", alpha=0.4, s=self.dataset["sqft_living"]/100, label="Living space", figsize=(10,7), c="price", cmap=pyplot.get_cmap("jet"), colorbar=True)
-        #pyplot.show()
+        self.dataVisualizer.showHeatMap(self.dataset.data, "long", "lat", "Living space", "sqft_living", "price", lambda x: x/100)
+        self.dataVisualizer.showHeatMap(self.dataset.data[self.dataset.data["price"] <= 500000], "long", "lat", "Living space", "sqft_living", "price", lambda x: x/100)
 
         # correlationMatrix = self.dataset.corr()
         # print(correlationMatrix["price"].sort_values(ascending=False))
