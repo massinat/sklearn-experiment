@@ -23,5 +23,7 @@ class ModelBuilder:
         forest = RandomForestClassifier(n_estimators=nEstimators, random_state=42)
         forest.fit(X, y)
 
-        for index in range(len(X[0])):
-            print(f"Feature[{index}]={forest.feature_importances_[index]}")
+        importances = forest.feature_importances_
+
+        for index in importances:
+            print(f"Feature[{index}]={importances[index]}")

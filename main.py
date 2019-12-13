@@ -41,7 +41,7 @@ class Solution:
 
         # Check the feature names! Probably it's wrong
         self.modelBuilder.univariateFeatureSelection(self.dataset.X, self.dataset.y, self.dataset.columns, 30)
-        self.modelBuilder.treeBasedFeatureSelection(self.dataset.X, self.dataset.y, 10)
+        self.modelBuilder.treeBasedFeatureSelection(self.dataset.X, self.dataset.y, 200)
 
         # correlationMatrix = self.dataset.corr()
         # print(correlationMatrix["price"].sort_values(ascending=False))
