@@ -7,11 +7,12 @@ Contains method to initialize, manipulate and filter all the data loaded from th
 """
 
 import pandas as pd
+from sklearn import preprocessing
 
 
 class Dataset:
     def __init__(self, inputFile):
-        self._originalDataset = pd.read_csv(inputFile, delimiter=",")
+        self._originalDataset = pd.read_csv(inputFile, delimiter=",").drop("id", axis=1).drop("date", axis=1)
         self._workingDataset = self._originalDataset.copy()
         self._X = self._workingDataset.drop("price", axis=1)
         self._y = self._workingDataset["price"]
@@ -44,5 +45,15 @@ class Dataset:
 
         self.data[name] = lambdaCalculation()
 
+    def normalizeData(self):
+        normalizer = preprocessing.MinMaxScaler()
+        self._X = normalizer.fit_transform(self._X)
+
+    def standardizeData(self):
+        standardizer = preprocessing.StandardScaler()
+        self._X = standardizer.fit_transform(self._X)
+
     def restoreDataset(self):
         self._workingDataset = self._originalDataset.copy()
+        self._X = self._workingDataset.drop("price", axis=1)
+        self._y = self._workingDataset["price"]

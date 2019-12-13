@@ -7,6 +7,7 @@ This class will visualize all the charts used for this assignment
 
 import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 
 class DataVisualizer:
@@ -17,6 +18,10 @@ class DataVisualizer:
 
     def showHistogram(self, dataset, bins=10):
         dataset.hist(bins=bins)
+        plt.show()
+
+    def showBoxplot(self, dataset):
+        sns.boxplot(x=dataset)
         plt.show()
 
     def showHeatMap(self, dataset, xName, yName, label, radiusAttribute, colorAttribute, lambdaTransformation=lambda x: x, alpha=1):
