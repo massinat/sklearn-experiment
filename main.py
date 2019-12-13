@@ -27,8 +27,8 @@ class Solution:
         ##!self.dataVisualizer.showScatter(self.dataset.X, "long", "lat")
         ##!self.dataVisualizer.showScatter(self.dataset.X, "long", "lat", 0.1)
 
-        self.dataVisualizer.showHeatMap(self.dataset.data, "long", "lat", "Living space", "sqft_living", "price", lambda x: x/100)
-        self.dataVisualizer.showHeatMap(self.dataset.data[self.dataset.data["price"] <= 500000], "long", "lat", "Living space", "sqft_living", "price", lambda x: x/100)
+        ##!self.dataVisualizer.showHeatMap(self.dataset.data, "long", "lat", "Living space", "sqft_living", "price", lambda x: x/100)
+        ##!self.dataVisualizer.showHeatMap(self.dataset.data[self.dataset.data["price"] <= 500000], "long", "lat", "Living space", "sqft_living", "price", lambda x: x/100)
 
         # correlationMatrix = self.dataset.corr()
         # print(correlationMatrix["price"].sort_values(ascending=False))

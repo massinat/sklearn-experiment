@@ -26,7 +26,7 @@ class Dataset:
 
     @property
     def y(self):
-        return self.y
+        return self._y
 
     @property
     def columns(self):
