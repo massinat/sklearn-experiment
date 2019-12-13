@@ -36,19 +36,12 @@ class Solution:
         ##!self.dataVisualizer.showHeatMap(self.dataset.data, "long", "lat", "Living space", "sqft_living", "price", lambda x: x/100)
         ##!self.dataVisualizer.showHeatMap(self.dataset.data[self.dataset.data["price"] <= 500000], "long", "lat", "Living space", "sqft_living", "price", lambda x: x/100)
 
-        # Having remove the outliers, we choose for normalising data. We can use both and decide what works better [suggested approach]
+        # Having removed the outliers, we choose for normalising data. We can use both and decide what works better [suggested approach]
         ##!self.dataset.normalizeData()
 
-        # Check the feature names! Probably it's wrong
-        self.modelBuilder.univariateFeatureSelection(self.dataset.X, self.dataset.y, self.dataset.columns, 30)
-        self.modelBuilder.treeBasedFeatureSelection(self.dataset.X, self.dataset.y, 200)
-
-        # correlationMatrix = self.dataset.corr()
-        # print(correlationMatrix["price"].sort_values(ascending=False))
-
-        # attributes = ["price", "sqft_living", "grade"] # to be continued
-        # scatter_matrix(self.dataset[attributes], figsize=(12,8))
-        # pyplot.show()
+        # Memory consumption for tree based feature selection. We cut the number of instances
+        ##!self.modelBuilder.univariateFeatureSelection(self.dataset.X, self.dataset.y, 30)
+        ##!self.modelBuilder.treeBasedFeatureSelection(self.dataset.X, self.dataset.y, 1, 20000)
 
 if __name__ == "__main__":
     solution = Solution("housing.csv", "output.txt")
