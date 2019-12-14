@@ -13,7 +13,11 @@ from sklearn.model_selection import train_test_split
 
 class Dataset:
     def __init__(self, inputFile):
-        self._originalDataset = pd.read_csv(inputFile, delimiter=",").drop("id", axis=1).drop("date", axis=1)
+        self._originalDataset = (
+            pd.read_csv(inputFile, delimiter=",")
+            .drop("id", axis=1)
+            .drop("date", axis=1)
+        )
         self._workingDataset = self._originalDataset.copy()
         self._X = self._workingDataset.drop("price", axis=1)
         self._y = self._workingDataset["price"]
@@ -54,7 +58,9 @@ class Dataset:
         self.data.drop(name, axis=1)
 
     def splitTrainingTestData(self):
-        self.XTrain, self.XTest, self.yTrain, self.yTest = train_test_split(self.X, self.y, test_size=0.20, random_state=42)
+        self.XTrain, self.XTest, self.yTrain, self.yTest = train_test_split(
+            self.X, self.y, test_size=0.20, random_state=42
+        )
 
     def restoreDataset(self):
         self._workingDataset = self._originalDataset.copy()

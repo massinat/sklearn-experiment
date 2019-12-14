@@ -6,7 +6,8 @@ It executes the whole experiment: data visualization, elaboration and model
 @Student id:        
 """
 
-from sklearn.linear_model import LinearRegression, Lasso, ElasticNet
+import numpy as np
+from sklearn.linear_model import LinearRegression, ElasticNet, BayesianRidge
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.ensemble import GradientBoostingRegressor
@@ -17,7 +18,6 @@ from dataVisualizer import DataVisualizer
 
 
 class Solution:
-
     def __init__(self, inputFile, outputFile):
         self.dataset = Dataset(inputFile)
         self.modelBuilder = ModelBuilder()
@@ -30,8 +30,8 @@ class Solution:
 
         # Data distribution and univariate outlier detection
         ##!for item in [x for x in self.dataset.columns]:
-            ##!self.dataVisualizer.showHistogram(self.dataset.data[[item]])
-            ##!self.dataVisualizer.showBoxplot(self.dataset.data[[item]])
+        ##!self.dataVisualizer.showHistogram(self.dataset.data[[item]])
+        ##!self.dataVisualizer.showBoxplot(self.dataset.data[[item]])
 
         # Ordinal categorical feature in our dataset [No categorical feature]
 
@@ -51,9 +51,46 @@ class Solution:
         # Split training and testa data here?
         self.dataset.splitTrainingTestData()
 
-        self.modelBuilder.addToPipeline("KNN Pipeline", StandardScaler, "KNN", KNeighborsRegressor)
+        ##!self.modelBuilder.addToPipeline("Linear Pipeline", StandardScaler, "Linear Regression", LinearRegression)
+        ##!self.modelBuilder.addToPipeline("KNN Pipeline", StandardScaler, "KNN", KNeighborsRegressor)
+        ##!self.modelBuilder.addToPipeline("Bayesian Pipeline", StandardScaler, "Bayesian Ridge", BayesianRidge)
+        ##!self.modelBuilder.addToPipeline("Elastic Pipeline", StandardScaler, "Elastic", ElasticNet)
+        ##!self.modelBuilder.addToPipeline("Decision Pipeline", StandardScaler, "Decision Tree", DecisionTreeRegressor)
+        ##!self.modelBuilder.addToPipeline("Gradient", StandardScaler, "Gradient", GradientBoostingRegressor)
 
-        self.modelBuilder.evaluateModels(self.dataset.XTrain, self.dataset.yTrain)
+        ##!self.modelBuilder.evaluateModels(self.dataset.XTrain, self.dataset.yTrain)
+
+        self.modelBuilder.searchBestHyperparameters(
+            self.dataset.XTrain,
+            self.dataset.yTrain,
+            StandardScaler,
+            "KNN",
+            KNeighborsRegressor,
+            dict(
+                n_neighbors=np.array(
+                    [1, 2, 3, 5, 10, 20, 30, 40, 50, 100, 150, 300, 500, 1000]
+                ),
+                weights=np.array(["uniform", "distance"]),
+                algorithm=np.array(["auto", "ball_tree", "kd_tree", "brute"]),
+                p=np.array([1, 2, 3]),
+            ),
+        )
+
+        self.modelBuilder.searchBestHyperparameters(
+            self.dataset.XTrain,
+            self.dataset.yTrain,
+            StandardScaler,
+            "Gradient",
+            GradientBoostingRegressor,
+            dict(
+                random_state=42,
+                n_estimators=np.array(
+                    [50, 100, 200, 300, 400, 500, 1000, 1500, 2500, 5000]
+                ),
+                loss=np.array(["ls", "lad", "huber", "quantile"]),
+            ),
+        )
+
 
 if __name__ == "__main__":
     solution = Solution("housing.csv", "output.txt")
