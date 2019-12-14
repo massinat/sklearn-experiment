@@ -42,6 +42,7 @@ class Solution:
         # Memory consumption for tree based feature selection. We cut the number of instances
         ##!self.modelBuilder.univariateFeatureSelection(self.dataset.X, self.dataset.y, 30)
         ##!self.modelBuilder.treeBasedFeatureSelection(self.dataset.X, self.dataset.y, 1, 20000)
+        self.modelBuilder.greedyFeaturSelection(self.dataset.X, self.dataset.y)
 
 if __name__ == "__main__":
     solution = Solution("housing.csv", "output.txt")

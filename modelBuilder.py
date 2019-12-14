@@ -6,8 +6,9 @@ It performs the main steps in order to build the model
 @Student id:        
 """
 
-from sklearn.feature_selection import SelectPercentile, f_regression
+from sklearn.feature_selection import SelectPercentile, f_regression, RFECV
 from sklearn.ensemble import RandomForestClassifier
+from sklearn import linear_model
 
 
 class ModelBuilder:
@@ -31,3 +32,11 @@ class ModelBuilder:
 
         for item in sorted(result, key=lambda x: x[1], reverse=True):
             print(f"{item[0]}={item[1]}")
+
+    def greedyFeaturSelection(self, X, y):
+        estimator = linear_model.LogisticRegression(multi_class="auto", solver="lbfgs")
+        rfecv = RFECV(estimator, cv=15)
+        rfecv.fit(X, y)
+
+        print(rfecv.n_features_)
+        print(rfecv.ranking_)
