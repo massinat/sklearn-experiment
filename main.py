@@ -6,6 +6,11 @@ It executes the whole experiment: data visualization, elaboration and model
 @Student id:        
 """
 
+from sklearn.linear_model import LinearRegression, Lasso, ElasticNet
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.preprocessing import StandardScaler
 from dataset import Dataset
 from modelBuilder import ModelBuilder
 from dataVisualizer import DataVisualizer
@@ -37,12 +42,18 @@ class Solution:
         ##!self.dataVisualizer.showHeatMap(self.dataset.data[self.dataset.data["price"] <= 500000], "long", "lat", "Living space", "sqft_living", "price", lambda x: x/100)
 
         # Having removed the outliers, we choose for normalising data. We can use both and decide what works better [suggested approach]
-        ##!self.dataset.normalizeData()
 
         # Memory consumption for tree based feature selection. We cut the number of instances
         ##!self.modelBuilder.univariateFeatureSelection(self.dataset.X, self.dataset.y, 30)
         ##!self.modelBuilder.treeBasedFeatureSelection(self.dataset.X, self.dataset.y, 1, 20000)
-        self.modelBuilder.greedyFeaturSelection(self.dataset.X, self.dataset.y)
+        ##!self.modelBuilder.greedyFeatureSelection(self.dataset.X, self.dataset.y)
+
+        # Split training and testa data here?
+        self.dataset.splitTrainingTestData()
+
+        self.modelBuilder.addToPipeline("KNN Pipeline", StandardScaler, "KNN", KNeighborsRegressor)
+
+        self.modelBuilder.evaluateModels(self.dataset.XTrain, self.dataset.yTrain)
 
 if __name__ == "__main__":
     solution = Solution("housing.csv", "output.txt")

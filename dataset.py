@@ -8,6 +8,7 @@ Contains method to initialize, manipulate and filter all the data loaded from th
 
 import pandas as pd
 from sklearn import preprocessing
+from sklearn.model_selection import train_test_split
 
 
 class Dataset:
@@ -34,6 +35,7 @@ class Dataset:
         return self.data.columns
 
     def info(self):
+        print(self.data.shape)
         print(self.data.head())
         print(self.data.info())
         for item in self.data.columns:
@@ -45,13 +47,14 @@ class Dataset:
 
         self.data[name] = lambdaCalculation()
 
-    def normalizeData(self):
-        normalizer = preprocessing.MinMaxScaler()
-        self._X = normalizer.fit_transform(self._X)
+    def transformAttribute(self, name, lambdaCalculation):
+        self.data[name] = lambdaCalculation()
 
-    def standardizeData(self):
-        standardizer = preprocessing.StandardScaler()
-        self._X = standardizer.fit_transform(self._X)
+    def removeAttribute(self, name):
+        self.data.drop(name, axis=1)
+
+    def splitTrainingTestData(self):
+        self.XTrain, self.XTest, self.yTrain, self.yTest = train_test_split(self.X, self.y, test_size=0.20, random_state=42)
 
     def restoreDataset(self):
         self._workingDataset = self._originalDataset.copy()
