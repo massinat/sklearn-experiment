@@ -65,59 +65,95 @@ class Solution:
             lambda x: x / 100,
         )
 
-    # def exploreModels(self):
+    def exploreModels(self):
 
-    # Memory consumption for tree based feature selection. We cut the number of instances
-    ##!self.modelBuilder.univariateFeatureSelection(self.dataset.X, self.dataset.y, 30)
-    ##!self.modelBuilder.treeBasedFeatureSelection(self.dataset.X, self.dataset.y, 1, 20000)
-    ##!self.modelBuilder.greedyFeatureSelection(self.dataset.X, self.dataset.y)
+        self.modelBuilder.univariateFeatureSelection(self.dataset.X, self.dataset.y, 30)
 
-    # Split training and testa data here?
-    ##!self.dataset.splitTrainingTestData()
+        """
+        First 12 features selected by previous feature selections
+        Should be directly return by the method but we decided to print them only for didactic purpose
+        """
+        features = [
+            "sqft_living",
+            "grade",
+            "sqft_above",
+            "sqft_living15",
+            "bathrooms",
+            "view",
+            "sqft_basement",
+            "bedrooms",
+            "lat",
+            "waterfront",
+            "floors",
+            "renovated",
+        ]
 
-    # Not having removed the outliers, we choose for standardizing data [it works better with outliers]
-    ##!self.modelBuilder.addToPipeline("Linear Pipeline", StandardScaler, "Linear Regression", LinearRegression)
-    ##!self.modelBuilder.addToPipeline("KNN Pipeline", StandardScaler, "KNN", KNeighborsRegressor)
-    ##!self.modelBuilder.addToPipeline("Bayesian Pipeline", StandardScaler, "Bayesian Ridge", BayesianRidge)
-    ##!self.modelBuilder.addToPipeline("Elastic Pipeline", StandardScaler, "Elastic", ElasticNet)
-    ##!self.modelBuilder.addToPipeline("Decision Pipeline", StandardScaler, "Decision Tree", DecisionTreeRegressor)
-    ##!self.modelBuilder.addToPipeline("Gradient", StandardScaler, "Gradient", GradientBoostingRegressor)
+        # Split training and testa data
+        self.dataset.splitTrainingTestData()
 
-    ##!self.modelBuilder.evaluateModels(self.dataset.XTrain, self.dataset.yTrain)
+        # Not having removed the outliers, we choose for standardizing data [it works better with outliers]
+        self.modelBuilder.addToPipeline(
+            "Linear Pipeline", StandardScaler, "Linear Regression", LinearRegression
+        )
+        self.modelBuilder.addToPipeline(
+            "KNN Pipeline", StandardScaler, "KNN", KNeighborsRegressor
+        )
+        self.modelBuilder.addToPipeline(
+            "Bayesian Pipeline", StandardScaler, "Bayesian Ridge", BayesianRidge
+        )
+        self.modelBuilder.addToPipeline(
+            "Elastic Pipeline", StandardScaler, "Elastic", ElasticNet
+        )
+        self.modelBuilder.addToPipeline(
+            "Decision Pipeline", StandardScaler, "Decision Tree", DecisionTreeRegressor
+        )
+        self.modelBuilder.addToPipeline(
+            "Gradient Pipeline",
+            StandardScaler,
+            "Gradient Boosting",
+            GradientBoostingRegressor,
+        )
 
-    # self.modelBuilder.searchBestHyperparameters(
-    #     self.dataset.XTrain,
-    #     self.dataset.yTrain,
-    #     StandardScaler,
-    #     "KNN",
-    #     KNeighborsRegressor,
-    #     dict(
-    #         n_neighbors=np.array(
-    #             [1, 2, 3, 5, 10, 20, 30, 40, 50, 100, 150, 300, 500, 1000]
-    #         ),
-    #         weights=np.array(["uniform", "distance"]),
-    #         algorithm=np.array(["auto", "ball_tree", "kd_tree", "brute"]),
-    #         p=np.array([1, 2, 3]),
-    #     ),
-    # )
+        self.modelBuilder.evaluateModels(
+            self.dataset.XTrain[features], self.dataset.yTrain
+        )
 
-    # self.modelBuilder.searchBestHyperparameters(
-    #     self.dataset.XTrain,
-    #     self.dataset.yTrain,
-    #     StandardScaler,
-    #     "Gradient",
-    #     GradientBoostingRegressor,
-    #     dict(
-    #         random_state=np.array([42]),
-    #         n_estimators=np.array(
-    #             [50, 100, 200, 300, 400, 500, 1000, 1500, 2500, 5000]
-    #         ),
-    #         loss=np.array(["ls", "lad", "huber", "quantile"]),
-    #     ),
-    # )
+        self.modelBuilder.searchBestHyperparameters(
+            self.dataset.XTrain,
+            self.dataset.yTrain,
+            StandardScaler,
+            "KNN",
+            KNeighborsRegressor,
+            dict(
+                n_neighbors=np.array(
+                    [1, 2, 3, 5, 10, 20, 30, 40, 50, 100, 150, 300, 500, 1000]
+                ),
+                weights=np.array(["uniform", "distance"]),
+                algorithm=np.array(["auto", "ball_tree", "kd_tree", "brute"]),
+                p=np.array([1, 2, 3]),
+            ),
+        )
+
+        self.modelBuilder.searchBestHyperparameters(
+            self.dataset.XTrain,
+            self.dataset.yTrain,
+            StandardScaler,
+            "Gradient",
+            GradientBoostingRegressor,
+            dict(
+                random_state=np.array([42]),
+                n_estimators=np.array(
+                    [50, 100, 200, 300, 400, 500, 1000, 1500, 2500, 5000]
+                ),
+                loss=np.array(["ls", "lad", "huber", "quantile"]),
+            ),
+        )
 
 
 if __name__ == "__main__":
     solution = Solution("housing.csv", "output.txt")
+    
+    solution.dataset.info()
     solution.engineerData()
-    solution.exploreData()
+    # solution.exploreData()
+    solution.exploreModels()

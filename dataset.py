@@ -16,8 +16,6 @@ class Dataset:
         self._originalDataset = pd.read_csv(inputFile, delimiter=",")
         self._originalDataset.set_index("id")
         self._workingDataset = self._originalDataset.copy()
-        self._X = self._workingDataset.drop("price", axis=1)
-        self._y = self._workingDataset["price"]
 
     @property
     def data(self):
@@ -25,11 +23,11 @@ class Dataset:
 
     @property
     def X(self):
-        return self._X
+        return self.data.drop("price", axis=1)
 
     @property
     def y(self):
-        return self._y
+        return self.data["price"]
 
     @property
     def columns(self):
@@ -67,5 +65,3 @@ class Dataset:
 
     def restoreDataset(self):
         self._workingDataset = self._originalDataset.copy()
-        self._X = self._workingDataset.drop("price", axis=1)
-        self._y = self._workingDataset["price"]
