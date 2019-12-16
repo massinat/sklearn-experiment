@@ -11,8 +11,7 @@ import seaborn as sns
 
 
 class DataVisualizer:
-
-    def showScatter(self, dataset, xName, yName, alpha=1):        
+    def showScatter(self, dataset, xName, yName, alpha=1):
         dataset.plot(kind="scatter", x=xName, y=yName, alpha=alpha)
         plt.show()
 
@@ -24,6 +23,26 @@ class DataVisualizer:
         sns.boxplot(x=dataset)
         plt.show()
 
-    def showHeatMap(self, dataset, xName, yName, label, radiusAttribute, colorAttribute, lambdaTransformation=lambda x: x, alpha=1):
-        dataset.plot(kind="scatter", x=xName, y=yName, label=label, s=lambdaTransformation(dataset[radiusAttribute]), c=colorAttribute, cmap=plt.get_cmap("jet"), alpha=alpha, colorbar=True)
+    def showHeatMap(
+        self,
+        dataset,
+        xName,
+        yName,
+        label,
+        radiusAttribute,
+        colorAttribute,
+        lambdaTransformation=lambda x: x,
+        alpha=1,
+    ):
+        dataset.plot(
+            kind="scatter",
+            x=xName,
+            y=yName,
+            label=label,
+            s=lambdaTransformation(dataset[radiusAttribute]),
+            c=colorAttribute,
+            cmap=plt.get_cmap("jet"),
+            alpha=alpha,
+            colorbar=True,
+        )
         plt.show()

@@ -21,6 +21,7 @@ from dataVisualizer import DataVisualizer
 class Solution:
     def __init__(self, inputFile, outputFile):
         self.dataset = Dataset(inputFile)
+        self.selectedFeatures = []
         self.modelBuilder = ModelBuilder()
         self.dataVisualizer = DataVisualizer()
         self._outputFile = outputFile
@@ -41,6 +42,8 @@ class Solution:
         self.dataset.removeAttribute("date")
         self.dataset.removeAttribute("yr_renovated")
         self.dataset.removeAttribute("yr_built")
+
+        self.dataset.splitTrainingTestData()
 
     # Let's nicely explore our data to gain more insight
     def exploreData(self):
@@ -65,6 +68,7 @@ class Solution:
             lambda x: x / 100,
         )
 
+    # Here we will explore different algorithms with different hyperparameters [grid search]
     def exploreModels(self):
 
         self.modelBuilder.univariateFeatureSelection(self.dataset.X, self.dataset.y, 30)
@@ -73,7 +77,7 @@ class Solution:
         First 12 features selected by previous feature selections
         Should be directly return by the method but we decided to print them only for didactic purpose
         """
-        features = [
+        self.selectedFeatures = [
             "sqft_living",
             "grade",
             "sqft_above",
@@ -87,9 +91,6 @@ class Solution:
             "floors",
             "renovated",
         ]
-
-        # Split training and testa data
-        self.dataset.splitTrainingTestData()
 
         # Not having removed the outliers, we choose for standardizing data [it works better with outliers]
         self.modelBuilder.addToPipeline(
@@ -115,11 +116,11 @@ class Solution:
         )
 
         self.modelBuilder.evaluateModels(
-            self.dataset.XTrain[features], self.dataset.yTrain
+            self.dataset.XTrain[self.selectedFeatures], self.dataset.yTrain
         )
 
         self.modelBuilder.searchBestHyperparameters(
-            self.dataset.XTrain,
+            self.dataset.XTrain[self.selectedFeatures],
             self.dataset.yTrain,
             StandardScaler,
             "KNN",
@@ -135,7 +136,7 @@ class Solution:
         )
 
         self.modelBuilder.searchBestHyperparameters(
-            self.dataset.XTrain,
+            self.dataset.XTrain[self.selectedFeatures],
             self.dataset.yTrain,
             StandardScaler,
             "Gradient",
@@ -149,11 +150,42 @@ class Solution:
             ),
         )
 
+    # Classify the test data and calculate the model performance
+    def classifyData(self):
+
+        """
+        We will use the best 2 models [KNN and Gradient Boosting] with the best hyperparameters configuration calculated previously
+        """
+        self.modelBuilder.classify(
+            self.dataset.XTrain[self.selectedFeatures],
+            self.dataset.yTrain,
+            self.dataset.XTest[self.selectedFeatures],
+            self.dataset.yTest,
+            StandardScaler,
+            "KNN",
+            lambda: KNeighborsRegressor(
+                algorithm="auto", n_neighbors=10, p=1, weights="distance"
+            ),
+        )
+
+        self.modelBuilder.classify(
+            self.dataset.XTrain[self.selectedFeatures],
+            self.dataset.yTrain,
+            self.dataset.XTest[self.selectedFeatures],
+            self.dataset.yTest,
+            StandardScaler,
+            "Gradient Boosting",
+            lambda: GradientBoostingRegressor(
+                loss="huber", n_estimators=2500, random_state=42
+            ),
+        )
+
 
 if __name__ == "__main__":
     solution = Solution("housing.csv", "output.txt")
-    
+
     solution.dataset.info()
     solution.engineerData()
-    # solution.exploreData()
+    solution.exploreData()
     solution.exploreModels()
+    solution.classifyData()

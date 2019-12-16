@@ -8,6 +8,7 @@ It performs the main steps in order to build the model
 
 from sklearn.model_selection import KFold, cross_val_score, GridSearchCV
 from sklearn.feature_selection import SelectPercentile, f_regression, RFECV
+from sklearn.metrics import r2_score
 from sklearn.pipeline import Pipeline
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import linear_model
@@ -81,3 +82,17 @@ class ModelBuilder:
 
         for mean, standard, parameter in zip(means, standards, parameters):
             print(f"{algorithmName}: {mean} [{standard}] with parameters {parameter}")
+
+    def classify(
+        self, XTrain, yTrain, XTest, yTest, scaler, algorithmName, lambdaAlgorithm
+    ):
+        scaler = scaler().fit(XTrain)
+        scaledXTrain = scaler.transform(XTrain)
+        model = lambdaAlgorithm()
+        model.fit(scaledXTrain, yTrain)
+
+        scaledXTest = scaler.transform(XTest)
+        predictions = model.predict(scaledXTest)
+
+        print(f"{algorithmName} R2 score: {r2_score(yTest, predictions)}")
+
