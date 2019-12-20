@@ -76,6 +76,7 @@ class Solution:
         """
         First 12 features selected by previous feature selections
         Should be directly return by the method but we decided to print them only for didactic purpose
+        Can be removed to check the result on full dataset
         """
         self.selectedFeatures = [
             "sqft_living",
